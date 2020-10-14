@@ -29,46 +29,46 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_article(self, article: Article):
-        """ Adds an Article to the repository. """
+    def add_movie(self, movie: Movie):
+        """ Adds a Movie to the repository. """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_article(self, id: int) -> Article:
-        """ Returns Article with id from the repository.
-        If there is no Article with the given id, this method returns None.
+    def get_movie(self, id: int) -> Movie:
+        """ Returns Movie with id from the repository.
+        If there is no Movie with the given id, this method returns None.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_articles_by_date(self, target_date: date) -> List[Article]:
-        """ Returns a list of Articles that were published on target_date.
-        If there are no Articles on the given date, this method returns an empty list.
+    def get_movie_by genre(self, target_genre: genre) -> List[Genre]:
+        """ Returns a list of Movies that have a specific genre.
+        If there are no Movies on the given date, this method returns an empty list.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_number_of_articles(self):
-        """ Returns the number of Articles in the repository. """
+    def get_number_of_genres(self):
+        """ Returns the number of Movies in the repository. """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_first_article(self) -> Article:
-        """ Returns the first Article, ordered by date, from the repository.
+    def get_first_movie(self) -> Movie:
+        """ Returns the first Movie, ordered by date, from the repository.
         Returns None if the repository is empty.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_last_article(self) -> Article:
-        """ Returns the last Article, ordered by date, from the repository.
+    def get_last_movie(self) -> Movie:
+        """ Returns the last Movie, ordered by date, from the repository.
         Returns None if the repository is empty.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_articles_by_id(self, id_list):
-        """ Returns a list of Articles, whose ids match those in id_list, from the repository.
+    def get_movies_by_id(self, id_list):
+        """ Returns a list of Movies, whose ids match those in id_list, from the repository.
         If there are no matches, this method returns an empty list.
         """
         raise NotImplementedError

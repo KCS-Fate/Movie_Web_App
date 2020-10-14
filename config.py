@@ -17,4 +17,3 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     FLASK_APP = environ.get('FLASK_APP')
     FLASK_ENV = environ.get('FLASK_ENV')
-    #FLASK_ENV = environ.get('FLASK_ENV')
