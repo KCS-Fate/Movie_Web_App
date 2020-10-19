@@ -1,5 +1,89 @@
-from datetime import date, datetime
-from typing import List, Iterable
+class Actor:
+    def __init__(self, actor_name: str):
+        if actor_name == "" or type(actor_name) is not str:
+            self.__actor_full_name = None
+        else:
+            self.__actor_full_name = actor_name.strip()
+        self.__actor_colleagues = []
+
+    @property
+    def actor_full_name(self) -> str:
+        return self.__actor_full_name
+
+    def __repr__(self):
+        return f"<Actor {self.__actor_full_name}>"
+
+    def __eq__(self, other):
+        return self.__actor_full_name == other.__actor_full_name
+
+    def __lt__(self, other):
+        return other.__actor_full_name > self.__actor_full_name
+
+    def __hash__(self):
+        return hash(self.__actor_full_name)
+
+    def add_actor_colleague(self, colleague):
+        if not self.check_if_this_actor_worked_with(colleague):
+            self.__actor_colleagues.append(colleague)
+        return
+
+    def check_if_this_actor_worked_with(self, colleague):
+        if colleague in self.__actor_colleagues:
+            return True
+        else:
+            return False
+
+
+class Director:
+
+    def __init__(self, director_full_name: str):
+        if director_full_name == "" or type(director_full_name) is not str:
+            self.__director_full_name = None
+        else:
+            self.__director_full_name = director_full_name.strip()
+
+    @property
+    def director_full_name(self) -> str:
+        return self.__director_full_name
+
+    def __repr__(self):
+        return f"<Director {self.__director_full_name}>"
+
+    def __eq__(self, other):
+        return self.__director_full_name == other.__director_full_name
+
+    def __lt__(self, other):
+        return other.__director_full_name > self.__director_full_name
+
+    def __hash__(self):
+        return hash(self.__director_full_name)
+
+
+class Genre:
+
+    def __init__(self, genre_name: str):
+        if genre_name == "" or type(genre_name) is not str:
+            self.__genre_full_name = None
+        else:
+            self.__genre_full_name = genre_name.strip()
+
+    @property
+    def genre_full_name(self) -> str:
+        return self.__genre_full_name
+
+    def __repr__(self):
+        return f"<Genre {self.__genre_full_name}>"
+
+    def __eq__(self, other):
+        return self.__genre_full_name == other.__genre_full_name
+
+    def __lt__(self, other):
+        return other.__genre_full_name > self.__genre_full_name
+
+    def __hash__(self):
+        return hash(self.__genre_full_name)
+
+
 class Movie:
     def __init__(self, movie_full_name: str, movie_release_year: int):
         if movie_full_name == "" or type(movie_full_name) is not str:
@@ -11,13 +95,13 @@ class Movie:
             self.__movie_release_year = None
         else:
             self.__movie_release_year = movie_release_year
-        self.__id: int = None
-        self.__title: str = None
-        self.__description: str = None
-        self.__director: Director = None
-        self.__actors: List[Actor] = []
-        self.__genres: List[Genre] = []
-        self.__runtime_minutes: int = None
+        self.__id = None
+        self.__title = None
+        self.__description = None
+        self.__director = None
+        self.__actors = []
+        self.__genres = []
+        self.__runtime_minutes = None
         self.__rating = 0
         self.__votes = 0
         self.__revenue = 'Not Available'
@@ -34,14 +118,6 @@ class Movie:
         else:
             self.__title = movie_title.strip()
         return
-
-    @property
-    def id(self):
-        return self.__id
-
-    @id.setter
-    def id(self, id: int):
-        self.__id = id
 
     @property
     def description(self):
@@ -166,123 +242,46 @@ class Movie:
         return hash(self.__movie_full_name + str(self.__movie_release_year))
 
 
-
-class Actor:
-    def __init__(self, actor_name: str):
-        if actor_name == "" or type(actor_name) is not str:
-            self.__actor_full_name = None
+class Review:
+    def __init__(self, movie, review_text: str, rating: int):
+        if type(movie) is not Movie:
+            self.__movie = None
         else:
-            self.__actor_full_name = actor_name.strip()
-        self.__actor_colleagues = []
-        self.__movie_actors: List[Movie] = list()
+            self.__movie = movie
+
+        if review_text == "" or type(review_text) is not str:
+            self.__review_text = None
+        else:
+            self.__review_text = review_text
+
+        if rating == "" or type(rating) is not int or rating > 10 or rating < 1:
+            self.__rating = None
+        else:
+            self.__rating = rating
+
+        self.__timestamp = datetime.now()
 
     @property
-    def actor_full_name(self) -> str:
-        return self.__actor_full_name
+    def movie(self):
+        return self.__movie
 
     @property
-    def tagged_movies(self) -> Iterable[Movie]:
-        return iter(self.__movie_actors)
+    def review_text(self):
+        return self.__review_text
 
-    def add_movie(self, movie: Movie):
-        self.__movie_actors.append(movie)
+    @property
+    def rating(self):
+        return self.__rating
 
-    def is_applied_to(self, movie: Movie) -> bool:
-        return movie in self.__movie_actors
+    @property
+    def timestamp(self):
+        return self.__timestamp
 
     def __repr__(self):
-        return f"<Actor {self.__actor_full_name}>"
+        return f"<Movie: {self.__movie}\nReview: {self.__review_text}\nRating: {self.__rating}\nWritten at: {self.__timestamp}>"
 
     def __eq__(self, other):
-        return self.__actor_full_name == other.__actor_full_name
-
-    def __lt__(self, other):
-        return other.__actor_full_name > self.__actor_full_name
-
-    def __hash__(self):
-        return hash(self.__actor_full_name)
-
-    def add_actor_colleague(self, colleague):
-        if not self.check_if_this_actor_worked_with(colleague):
-            self.__actor_colleagues.append(colleague)
-        return
-
-    def check_if_this_actor_worked_with(self, colleague):
-        if colleague in self.__actor_colleagues:
-            return True
-        else:
-            return False
-
-
-class Director:
-    def __init__(self, director_full_name: str):
-        if director_full_name == "" or type(director_full_name) is not str:
-            self.__director_full_name = None
-        else:
-            self.__director_full_name = director_full_name.strip()
-        self.__movie_directors: List[Movie] = list()
-
-    @property
-    def director_full_name(self) -> str:
-        return self.__director_full_name
-
-    @property
-    def tagged_movies(self) -> Iterable[Movie]:
-        return iter(self.__movie_directors)
-
-    def __repr__(self):
-        return f"<Director {self.__director_full_name}>"
-
-    def __eq__(self, other):
-        return self.__director_full_name == other.__director_full_name
-
-    def __lt__(self, other):
-        return other.__director_full_name > self.__director_full_name
-
-    def __hash__(self):
-        return hash(self.__director_full_name)
-
-    def add_movie(self, movie: Movie):
-        self.__movie_directors.append(movie)
-
-    def is_applied_to(self, movie: Movie) -> bool:
-        return movie in self.__movie_directors
-
-
-class Genre:
-
-    def __init__(self, genre_name: str):
-        if genre_name == "" or type(genre_name) is not str:
-            self.__genre_full_name = None
-        else:
-            self.__genre_full_name = genre_name.strip()
-        self.__movie_genres: List[Movie] = list()
-
-    @property
-    def genre_full_name(self) -> str:
-        return self.__genre_full_name
-
-    @property
-    def movie_genres(self) -> Iterable[Movie]:
-        return iter(self.__movie_genres)
-
-    def __repr__(self):
-        return f"<Genre {self.__genre_full_name}>"
-
-    def __eq__(self, other):
-        return self.__genre_full_name == other.__genre_full_name
-
-    def __lt__(self, other):
-        return other.__genre_full_name > self.__genre_full_name
-
-    def __hash__(self):
-        return hash(self.__genre_full_name)
-
-    def add_movie(self, movie: Movie):
-        self.__movie_genres.append(movie)
-
-    def is_applied_to(self, movie: Movie) -> bool:
-        return movie in self.__movie_genres
+        return self.__movie == other.__movie and self.__review_text == other.__review_text and self.__rating == other.__rating
 
 
 class User:
@@ -472,54 +471,6 @@ class User:
         return top_ten_recommendations
 
 
-class Review:
-    def __init__(self, user: User, movie: Movie, review_text: str, rating: int):
-        self.__user: User = user
-        if type(movie) is not Movie:
-            self.__movie = None
-        else:
-            self.__movie = movie
-
-        if review_text == "" or type(review_text) is not str:
-            self.__review_text = None
-        else:
-            self.__review_text = review_text
-
-        if rating == "" or type(rating) is not int or rating > 10 or rating < 1:
-            self.__rating = None
-        else:
-            self.__rating = rating
-
-        self.__timestamp = datetime.now()
-
-    @property
-    def user(self) -> User:
-        return self.__user
-
-    @property
-    def movie(self):
-        return self.__movie
-
-    @property
-    def review_text(self):
-        return self.__review_text
-
-    @property
-    def rating(self):
-        return self.__rating
-
-    @property
-    def timestamp(self):
-        return self.__timestamp
-
-    def __repr__(self):
-        return f"<Movie: {self.__movie}\nReview: {self.__review_text}\nRating: {self.__rating}\nWritten at: {self.__timestamp}>"
-
-    def __eq__(self, other):
-        return self.__movie == other.__movie and self.__review_text == other.__review_text and self.__rating == other.__rating
-
-
-
 class WatchList:
     def __init__(self):
         self.__watchlist = []
@@ -558,35 +509,3 @@ class WatchList:
         else:
             self.pos += 1
             return self.__watchlist[self.pos - 1]
-
-class ModelException(Exception):
-    pass
-
-def make_review(review_text: str, user: User, movie: Movie):
-    review = Review(user, movie, review_text)
-    user.add_review(review)
-    movie.add_review(Review)
-    return review
-
-
-def make_actor_association(movie: Movie, actor: Actor):
-    if actor.is_applied_to(movie):
-        raise ModelException(f'Tag {movie.actor_full_name} already applied to Article "{movie.title}"')
-
-    movie.add_actor(actor)
-    actor.add_movie(movie)
-
-
-def make_genre_association(movie: Movie, genre: Genre):
-    if genre.is_applied_to(movie):
-        raise ModelException(f'Tag {movie.genre_full_name} already applied to Article "{movie.title}"')
-
-    movie.add_actor(genre)
-    genre.add_movie(movie)
-
-def make_director_association(movie: Movie, director: Actor):
-    if director.is_applied_to(movie):
-        raise ModelException(f'Tag {movie.director_full_name} already applied to Article "{movie.title}"')
-
-    movie.add_actor(director)
-    director.add_movie(movie)

@@ -1,43 +1,68 @@
-from movie_web_app.domain.methods import Movie, Actor, Genre, Director, Review, User, WatchList
 import csv
-from bisect import bisect, bisect_left, insort_left
+import os
+from typing import List
+from bisect import insort_left
 
 from werkzeug.security import generate_password_hash
 
 from movie_web_app.datafilereaders.repository import AbstractRepository, RepositoryException
+from movie_web_app.domain.methods import Movie, Genre, Director, User, Actor, Review, make_review, make_actor_association, make_genre_association, make_director_association
 
 
 class MovieFileCSVReader(AbstractRepository):
 
     def __init__(self):
-        self.__dataset_of_movies = []
-        self.__dataset_of_movies_index = dict()
-        self.__dataset_of_actors = []
-        self.__dataset_of_directors = []
-        self.__dataset_of_genres = []
+        self.__movies = list()
+        self.__movies_index = dict()
+        self.__genres = list()
+        self.__directors = list()
+        self.__actors = list()
+        self.__reviews = list()
+        self.__users = list()
 
-    @property
-    def dataset_of_movies(self):
-        return self.__dataset_of_movies
+    def add_user(self, user: User):
+        self.__users.append(user)
 
-    @property
-    def dataset_of_actors(self):
-        return self.__dataset_of_actors
+    def get_user(self, username) -> User:
+        return next((user for user in self.users if user.username == username), None)
 
-    @property
-    def dataset_of_directors(self):
-        return self.__dataset_of_directors
+    def add_movie(self, movie: Movie):
+        insort_left(self.__movies, movie)
+        self.__movies_index[movie.id] = movie
 
-    @property
-    def dataset_of_genres(self):
-        return self.__dataset_of_genres
+    def get_movie(self, id: int):
+        movie = None
 
-    def get_movie(self, movie_name):
-        if movie_name in self.__dataset_of_movies:
-            x = self.__dataset_of_movies.index(movie_name)
-            return self.__dataset_of_movies[x]
-        return
+        try:
+            movie = self.__movies_index[id]
+        except KeyError:
+            pass
+        return movie
 
+    def add_genre(self, genre: Genre):
+        self.__genres.append(genre)
+
+    def get_genre(self) -> List[Genre]:
+        return self.__genres
+
+    def add_director(self, director: Director):
+        self.__directors.append(director)
+
+    def get_director(self) -> List[Director]:
+        return self.__directors
+
+    def add_actor(self, actor: Actor):
+        self.__actors.append(actor)
+
+    def get_actor(self) -> List[Actor]:
+        return self.__actors
+
+    def add_review(self, review: Review):
+        super().add_review(review)
+        self.__reviews.append(review)
+
+    def get_reviews(self) -> List[Review]:
+        return self.__reviews
 
 def read_csv_file(filename: str):
     with open(filename, encoding='utf-8-sig') as infile:
@@ -65,14 +90,19 @@ def load_users(data_path: str, repo: MovieFileCSVReader):
     return users
 
 
-def load_movies(data_path:str, repo:MovieFileCSVReader):
+def load_movies(data_path: str, repo: MovieFileCSVReader):
     dataset_of_movies = []
+    genres = dict()
+    director = dict()
+    actor = dict()
+
+
     for data_row in read_csv_file(os.path.join(data_path, 'Data1000Movies.csv')):
-        id = int(data_row[0])
         movie = Movie(data_row[1], int(data_row[6]))
-        genres = data_row[2]
-        actors = data_row[5]
-        director = Director(data_row[4])
+        movie.id = int(data_row[0])
+        movie.genres = data_row[2]
+        movie.actors = data_row[5]
+        movie.director = Director(data_row[4])
         movie.description = data_row[3]
         movie.runtime_minutes = int(data_row[7])
         movie.rating = float(data_row[8])
@@ -91,26 +121,6 @@ def load_movies(data_path:str, repo:MovieFileCSVReader):
             movie.metascore = 'Not Available'
 
         repo.add_dataset_of_movies
-
-        if movie not in self.__dataset_of_movies:
-            self.__dataset_of_movies.append(movie)
-
-        if movie not in self.__dataset_of_movies:
-            self.__dataset_of_movies.append(movie)
-
-        for genre in genres:
-            if genre not in self.__dataset_of_genres:
-                self.__dataset_of_genres.append(genre)
-            movie.add_genre(genre)
-
-        if director not in self.__dataset_of_directors:
-            self.__dataset_of_directors.append(director)
-        movie.director = director
-
-        for actor in actors:
-            if actor not in self.__dataset_of_actors:
-                self.__dataset_of_actors.append(actor)
-            movie.add_actor(actor)
 
 
 
