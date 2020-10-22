@@ -1,6 +1,7 @@
 from flask import Flask
 from markupsafe import escape
-from movie_web_app.datafilereaders.movie_file_csv_reader import MovieFileCSVReader
+import movie_web_app.datafilereaders.repository as repo
+from movie_web_app.datafilereaders.movie_file_csv_reader import MovieFileCSVReader, populate
 
 import os
 import sys
@@ -10,10 +11,10 @@ def create_app(test_config=None):
 
     app = Flask(__name__)
     app.config.from_object("config.Config")
-    print(app.config)
-    filename = 'datafiles/Data1000MoviesTest.csv'
-    movie_file_reader = MovieFileCSVReader(filename)
     data_path = os.path.join('movie_web_app', 'datafilereaders', 'datafiles')
+
+    repo.repo_instance = MovieFileCSVReader
+    populate(data_path, repo.repo_instance)
 
     with app.app_context():
         # Register blueprints.

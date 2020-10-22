@@ -6,7 +6,8 @@ from bisect import insort_left
 from werkzeug.security import generate_password_hash
 
 from movie_web_app.datafilereaders.repository import AbstractRepository, RepositoryException
-from movie_web_app.domain.methods import Movie, Genre, Director, User, Actor, Review, make_review, make_actor_association, make_genre_association, make_director_association
+from movie_web_app.domain.methods import Movie, Genre, Director, User, Actor, Review, make_review, \
+    make_actor_association, make_genre_association, make_director_association
 
 
 class MovieFileCSVReader(AbstractRepository):
@@ -64,6 +65,7 @@ class MovieFileCSVReader(AbstractRepository):
     def get_reviews(self) -> List[Review]:
         return self.__reviews
 
+
 def read_csv_file(filename: str):
     with open(filename, encoding='utf-8-sig') as infile:
         reader = csv.reader(infile)
@@ -91,24 +93,36 @@ def load_users(data_path: str, repo: MovieFileCSVReader):
 
 
 def load_movies(data_path: str, repo: MovieFileCSVReader):
-    dataset_of_movies = []
     genres = dict()
-    director = dict()
-    actor = dict()
-
+    directors = dict()
+    actors = dict()
 
     for data_row in read_csv_file(os.path.join(data_path, 'Data1000Movies.csv')):
         movie = Movie(data_row[1], int(data_row[6]))
         movie.id = int(data_row[0])
-        movie.genres = data_row[2]
-        movie.actors = data_row[5]
-        movie.director = Director(data_row[4])
+        movie_genres = data_row[2].split(",")
         movie.description = data_row[3]
+        movie.director = Director(data_row[4])
+        movie_actors = data_row[5].split(",")
         movie.runtime_minutes = int(data_row[7])
         movie.rating = float(data_row[8])
         movie.votes = int(data_row[9])
         revenue = data_row[10]
         metascore = data_row[11]
+
+        for genre in movie_genres:
+            if genre not in genres.keys():
+                genres[genre] = list()
+            genres[genre].append(movie.id)
+
+        for actor in movie_actors:
+            if actor not in actors.keys():
+                actors[actor] = list()
+            actors[actor].append(movie.id)
+
+        if movie.director not in directors.keys():
+            directors[movie.director] = list()
+        directors[movie.director].append(movie.id)
 
         if revenue[0].isdigit():
             movie.revenue = float(revenue)
@@ -120,9 +134,49 @@ def load_movies(data_path: str, repo: MovieFileCSVReader):
         else:
             movie.metascore = 'Not Available'
 
-        repo.add_dataset_of_movies
+        repo.add_movie(movie)
+
+    for actor_name in actors.keys():
+        actor = Actor(actor_name)
+        for movie_id in actors[actor]:
+            movie = repo.get_movie(movie_id)
+            make_actor_association(movie, actor)
+        repo.add_actor(actor)
+
+    for genre_name in genres.keys():
+        genre = Genre(genre_name)
+        for movie_id in genres[genre]:
+            movie = repo.get_movie(movie_id)
+            make_genre_association(movie, genre)
+        repo.add_genre(genre)
+
+    for director_name in directors.keys():
+        director = Director(director_name)
+        for movie_id in directors[director]:
+            movie = repo.get_movie(movie_id)
+            make_director_association(movie, director)
+        repo.add_director(director)
 
 
+def load_reviews(data_path: str, repo: MovieFileCSVReader, users):
+    for data_row in read_csv_file(os.path.join(data_path, 'reviews.csv')):
+        review = make_review(
+            user=users[data_row[1]],
+            movie=repo.get_movie(int(data_row[2])),
+            review_text=data_row[3],
+            rating=int(data_row[4])
+        )
+
+
+def populate(data_path: str, repo: MovieFileCSVReader):
+    # Load movies and information into the repository.
+    load_movies(data_path, repo)
+
+    # Load users into the repository.
+    users = load_users(data_path, repo)
+
+    # Load comments into the repository.
+    load_reviews(data_path, repo, users)
 
 
 

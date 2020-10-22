@@ -562,8 +562,8 @@ class WatchList:
 class ModelException(Exception):
     pass
 
-def make_review(review_text: str, user: User, movie: Movie):
-    review = Review(user, movie, review_text)
+def make_review(review_text: str, user: User, movie: Movie, rating: int):
+    review = Review(user, movie, review_text, rating)
     user.add_review(review)
     movie.add_review(Review)
     return review
