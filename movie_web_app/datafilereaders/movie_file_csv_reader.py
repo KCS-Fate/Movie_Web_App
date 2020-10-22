@@ -83,10 +83,9 @@ def read_csv_file(filename: str):
 def load_users(data_path: str, repo: MovieFileCSVReader):
     users = dict()
     for data_row in read_csv_file(os.path.join(data_path, 'users.csv')):
-        user = User(
-            username=data_row[1],
-            password=generate_password_hash(data_row[2])
-        )
+        username=data_row[1]
+        password=generate_password_hash(data_row[2])
+        user = User(username, password)
         repo.add_user(user)
         users[data_row[0]] = user
     return users
@@ -102,7 +101,7 @@ def load_movies(data_path: str, repo: MovieFileCSVReader):
         movie.id = int(data_row[0])
         movie_genres = data_row[2].split(",")
         movie.description = data_row[3]
-        movie.director = Director(data_row[4])
+        movie.director = data_row[4]
         movie_actors = data_row[5].split(",")
         movie.runtime_minutes = int(data_row[7])
         movie.rating = float(data_row[8])
@@ -138,21 +137,21 @@ def load_movies(data_path: str, repo: MovieFileCSVReader):
 
     for actor_name in actors.keys():
         actor = Actor(actor_name)
-        for movie_id in actors[actor]:
+        for movie_id in actors[actor_name]:
             movie = repo.get_movie(movie_id)
             make_actor_association(movie, actor)
         repo.add_actor(actor)
 
     for genre_name in genres.keys():
         genre = Genre(genre_name)
-        for movie_id in genres[genre]:
+        for movie_id in genres[genre_name]:
             movie = repo.get_movie(movie_id)
             make_genre_association(movie, genre)
         repo.add_genre(genre)
 
     for director_name in directors.keys():
         director = Director(director_name)
-        for movie_id in directors[director]:
+        for movie_id in directors[director_name]:
             movie = repo.get_movie(movie_id)
             make_director_association(movie, director)
         repo.add_director(director)
@@ -164,7 +163,7 @@ def load_reviews(data_path: str, repo: MovieFileCSVReader, users):
             user=users[data_row[1]],
             movie=repo.get_movie(int(data_row[2])),
             review_text=data_row[3],
-            rating=int(data_row[4])
+            rating=data_row[4]
         )
 
 

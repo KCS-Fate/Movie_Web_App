@@ -166,6 +166,45 @@ class Movie:
         return hash(self.__movie_full_name + str(self.__movie_release_year))
 
 
+class WatchList:
+    def __init__(self):
+        self.__watchlist = []
+
+    @property
+    def watchlist(self):
+        return self.__watchlist
+
+    def add_movie(self, movie):
+        if type(movie) is Movie and movie not in self.__watchlist:
+            self.__watchlist.append(movie)
+
+    def remove_movie(self, movie):
+        if type(movie) is Movie and movie in self.__watchlist:
+            self.__watchlist.remove(movie)
+
+    def first_movie_in_watchlist(self):
+        return self.__watchlist[0]
+
+    def select_movie_to_watch(self, index):
+        if index < len(self.__watchlist):
+            return self.__watchlist[index]
+        else:
+            return None
+
+    def size(self):
+        return len(self.__watchlist)
+
+    def __iter__(self):
+        self.pos = 0
+        return self
+
+    def __next__(self):
+        if self.pos >= self.size():
+            raise StopIteration
+        else:
+            self.pos += 1
+            return self.__watchlist[self.pos - 1]
+
 
 class Actor:
     def __init__(self, actor_name: str):
@@ -344,6 +383,7 @@ class User:
         self.__time_spent_watching_movies_minutes += watched_movie.runtime_minutes
 
     def add_review(self, new_review):
+        print("\n\n\n", new_review, "\n\n\n")
         self.__reviews.append(new_review)
         new_review.movie.update_ratings(new_review)
 
@@ -473,7 +513,7 @@ class User:
 
 
 class Review:
-    def __init__(self, user: User, movie: Movie, review_text: str, rating: int):
+    def __init__(self, user: User, movie: Movie, review_text: str, rating: float):
         self.__user: User = user
         if type(movie) is not Movie:
             self.__movie = None
@@ -485,7 +525,7 @@ class Review:
         else:
             self.__review_text = review_text
 
-        if rating == "" or type(rating) is not int or rating > 10 or rating < 1:
+        if rating == "" or type(rating) is not float or rating > 10 or rating < 1:
             self.__rating = None
         else:
             self.__rating = rating
@@ -519,46 +559,6 @@ class Review:
         return self.__movie == other.__movie and self.__review_text == other.__review_text and self.__rating == other.__rating
 
 
-
-class WatchList:
-    def __init__(self):
-        self.__watchlist = []
-
-    @property
-    def watchlist(self):
-        return self.__watchlist
-
-    def add_movie(self, movie):
-        if type(movie) is Movie and movie not in self.__watchlist:
-            self.__watchlist.append(movie)
-
-    def remove_movie(self, movie):
-        if type(movie) is Movie and movie in self.__watchlist:
-            self.__watchlist.remove(movie)
-
-    def first_movie_in_watchlist(self):
-        return self.__watchlist[0]
-
-    def select_movie_to_watch(self, index):
-        if index < len(self.__watchlist):
-            return self.__watchlist[index]
-        else:
-            return None
-
-    def size(self):
-        return len(self.__watchlist)
-
-    def __iter__(self):
-        self.pos = 0
-        return self
-
-    def __next__(self):
-        if self.pos >= self.size():
-            raise StopIteration
-        else:
-            self.pos += 1
-            return self.__watchlist[self.pos - 1]
-
 class ModelException(Exception):
     pass
 
@@ -571,7 +571,7 @@ def make_review(review_text: str, user: User, movie: Movie, rating: int):
 
 def make_actor_association(movie: Movie, actor: Actor):
     if actor.is_applied_to(movie):
-        raise ModelException(f'Tag {movie.actor_full_name} already applied to Article "{movie.title}"')
+        raise ModelException(f'Actor {actor.actor_full_name} already applied to Article "{movie.title}"')
 
     movie.add_actor(actor)
     actor.add_movie(movie)
@@ -579,14 +579,14 @@ def make_actor_association(movie: Movie, actor: Actor):
 
 def make_genre_association(movie: Movie, genre: Genre):
     if genre.is_applied_to(movie):
-        raise ModelException(f'Tag {movie.genre_full_name} already applied to Article "{movie.title}"')
+        raise ModelException(f'Genre {genre.genre_full_name} already applied to Article "{movie.title}"')
 
     movie.add_actor(genre)
     genre.add_movie(movie)
 
 def make_director_association(movie: Movie, director: Actor):
     if director.is_applied_to(movie):
-        raise ModelException(f'Tag {movie.director_full_name} already applied to Article "{movie.title}"')
+        raise ModelException(f'director {director.director_full_name} already applied to Article "{movie.title}"')
 
     movie.add_actor(director)
     director.add_movie(movie)

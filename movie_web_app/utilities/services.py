@@ -1,11 +1,23 @@
 from typing import Iterable
 import random
 
-from movie_web_app.adapters.repository import AbstractRepository
-from movie_web_app.domain.model import Article
+from movie_web_app.datafilereaders.repository import AbstractRepository
+from movie_web_app.domain.methods import Movie
 
 
-def get_tag_names(repo: AbstractRepository):
+def get_genre_names(repo: AbstractRepository):
+    tags = repo.get_tags()
+    tag_names = [tag.tag_name for tag in tags]
+
+    return tag_names
+
+def get_actor_names(repo: AbstractRepository):
+    tags = repo.get_tags()
+    tag_names = [tag.tag_name for tag in tags]
+
+    return tag_names
+
+def get_director_name(repo: AbstractRepository):
     tags = repo.get_tags()
     tag_names = [tag.tag_name for tag in tags]
 

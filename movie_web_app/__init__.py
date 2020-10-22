@@ -1,10 +1,9 @@
 from flask import Flask
-from markupsafe import escape
+
 import movie_web_app.datafilereaders.repository as repo
 from movie_web_app.datafilereaders.movie_file_csv_reader import MovieFileCSVReader, populate
 
 import os
-import sys
 
 
 def create_app(test_config=None):
@@ -13,7 +12,7 @@ def create_app(test_config=None):
     app.config.from_object("config.Config")
     data_path = os.path.join('movie_web_app', 'datafilereaders', 'datafiles')
 
-    repo.repo_instance = MovieFileCSVReader
+    repo.repo_instance = MovieFileCSVReader()
     populate(data_path, repo.repo_instance)
 
     with app.app_context():

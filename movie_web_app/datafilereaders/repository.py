@@ -3,7 +3,7 @@ from typing import List
 from datetime import date
 
 #from movie_web_app.domain import User, Article, Tag, Comment
-from movie_web_app.domain.methods import Movie, Actor, Genre, Director, Review, User, WatchList
+from movie_web_app.domain.methods import Movie, Actor, Genre, Director, Review, User
 
 
 repo_instance = None
