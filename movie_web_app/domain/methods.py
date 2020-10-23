@@ -17,6 +17,7 @@ class Movie:
         self.__director: Director = None
         self.__actors: List[Actor] = []
         self.__genres: List[Genre] = []
+        self.__reviews: List[Review] = []
         self.__runtime_minutes: int = None
         self.__rating = 0
         self.__votes = 0
@@ -34,6 +35,14 @@ class Movie:
         else:
             self.__title = movie_title.strip()
         return
+
+    @property
+    def title(self):
+        return self.__movie_full_name
+
+    @property
+    def date(self):
+        return self.__movie_release_year
 
     @property
     def id(self):
@@ -152,6 +161,9 @@ class Movie:
     def update_ratings(self, review):
         self.__rating = ((self.__rating * self.__votes) + review.rating) / (self.__votes + 1)
         self.__votes += 1
+
+    def add_review(self, review):
+        self.__reviews.append(review)
 
     def __repr__(self):
         return f"<Movie {self.__movie_full_name}, {self.__movie_release_year}>"
@@ -383,7 +395,6 @@ class User:
         self.__time_spent_watching_movies_minutes += watched_movie.runtime_minutes
 
     def add_review(self, new_review):
-        print("\n\n\n", new_review, "\n\n\n")
         self.__reviews.append(new_review)
         new_review.movie.update_ratings(new_review)
 
@@ -565,7 +576,7 @@ class ModelException(Exception):
 def make_review(review_text: str, user: User, movie: Movie, rating: int):
     review = Review(user, movie, review_text, rating)
     user.add_review(review)
-    movie.add_review(Review)
+    movie.add_review(review)
     return review
 
 

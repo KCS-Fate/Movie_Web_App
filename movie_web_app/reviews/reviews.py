@@ -12,7 +12,7 @@ import movie_web_app.datafilereaders.repository as repo
 import movie_web_app.utilities.utilities as utilities
 import movie_web_app.reviews.services as services
 
-from covid.authentication.authentication import login_required
+from movie_web_app.authentication.authentication import login_required
 
 
 # Configure Blueprint.

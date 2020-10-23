@@ -2,7 +2,6 @@ import abc
 from typing import List
 from datetime import date
 
-#from movie_web_app.domain import User, Article, Tag, Comment
 from movie_web_app.domain.methods import Movie, Actor, Genre, Director, Review, User
 
 
@@ -39,6 +38,21 @@ class AbstractRepository(abc.ABC):
         """ Returns the Movie with id from the repository.
         If there is no movie with the given id, this method returns None.
         """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_number_of_movies(self):
+        """ Returns the number of Movies in the repository """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movies_by_id(self, id_list):
+        """ Returns a list of articles, whose ids match those in id_list from the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movie_ids_for_genre(self, genre_name: str):
+        """ Returns a list of ids representing Articles that are tagged by genre_name"""
         raise NotImplementedError
 
     @abc.abstractmethod

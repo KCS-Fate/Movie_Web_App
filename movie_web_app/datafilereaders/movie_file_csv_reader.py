@@ -40,6 +40,25 @@ class MovieFileCSVReader(AbstractRepository):
             pass
         return movie
 
+    def get_number_of_movies(self):
+        return len(self.__movies)
+
+    def get_movies_by_id(self, id_list):
+        existing_ids = [id for id in id_list if id in self.__movies_index]
+        movies = [self.__movies_index[id] for id in existing_ids]
+        return movies
+
+    def get_movie_ids_for_genre(self, genre_name: str):
+        genre = next((genre for genre in self.__genres if genre.genre_full_name == genre_name), None)
+
+        if genre is not None:
+            movie_ids = [movie.id for movie in genre.movie_genres]
+        else:
+            # No Tag with name tag_name, so return an empty list.
+            movie_ids = list()
+
+        return movie_ids
+
     def add_genre(self, genre: Genre):
         self.__genres.append(genre)
 
@@ -163,7 +182,7 @@ def load_reviews(data_path: str, repo: MovieFileCSVReader, users):
             user=users[data_row[1]],
             movie=repo.get_movie(int(data_row[2])),
             review_text=data_row[3],
-            rating=data_row[4]
+            rating=float(data_row[4])
         )
 
 

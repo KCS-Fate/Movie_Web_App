@@ -8,9 +8,9 @@ from password_validator import PasswordValidator
 
 from functools import wraps
 
-import covid.utilities.utilities as utilities
-import covid.authentication.services as services
-import covid.adapters.repository as repo
+import movie_web_app.utilities.utilities as utilities
+import movie_web_app.authentication.services as services
+import movie_web_app.datafilereaders.repository as repo
 
 # Configure Blueprint.
 authentication_blueprint = Blueprint(
