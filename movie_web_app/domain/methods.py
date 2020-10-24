@@ -592,12 +592,12 @@ def make_genre_association(movie: Movie, genre: Genre):
     if genre.is_applied_to(movie):
         raise ModelException(f'Genre {genre.genre_full_name} already applied to Article "{movie.title}"')
 
-    movie.add_actor(genre)
+    movie.add_genre(genre)
     genre.add_movie(movie)
 
-def make_director_association(movie: Movie, director: Actor):
+def make_director_association(movie: Movie, director: Director):
     if director.is_applied_to(movie):
-        raise ModelException(f'director {director.director_full_name} already applied to Article "{movie.title}"')
+        raise ModelException(f'director {director} already applied to Article "{movie.title}"')
 
-    movie.add_actor(director)
+    movie.director = director.director_full_name
     director.add_movie(movie)

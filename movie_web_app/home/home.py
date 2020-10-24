@@ -1,15 +1,15 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 
 import movie_web_app.utilities.utilities as utilities
 
 
 home_blueprint = Blueprint('home_bp', __name__)
 
-
 @home_blueprint.route('/', methods=['GET'])
 def home():
     return render_template(
         'home/home.html',
-        selected_articles=utilities.get_selected_movies(),
-        tag_urls=utilities.get_tags_and_urls()
+        title='Movie Home',
+        username=session.get('username', 'visitor'),
+        error_msg=None
     )

@@ -1,10 +1,10 @@
 from typing import List, Iterable
 
-from covid.adapters.repository import AbstractRepository
-from covid.domain.model import make_comment, Article, Comment, Tag
+from movie_web_app.datafilereaders.repository import AbstractRepository
+from movie_web_app.domain.methods import make_review, Review, Movie, Genre, Actor, Director
 
 
-class NonExistentArticleException(Exception):
+class NonExistentMovieException(Exception):
     pass
 
 
@@ -12,21 +12,21 @@ class UnknownUserException(Exception):
     pass
 
 
-def add_comment(article_id: int, comment_text: str, username: str, repo: AbstractRepository):
+def add_comment(movie_id: int, review_text: str, username: str, repo: AbstractRepository    ):
     # Check that the article exists.
-    article = repo.get_article(article_id)
-    if article is None:
-        raise NonExistentArticleException
+    movie = repo.get_movie(movie_id)
+    if movie is None:
+        raise NonExistentMovieException
 
     user = repo.get_user(username)
     if user is None:
         raise UnknownUserException
 
     # Create comment.
-    comment = make_comment(comment_text, user, article)
+    review = make_review(user, movie, review_text)
 
     # Update the repository.
-    repo.add_comment(comment)
+    repo.add_review(review_text)
 
 
 def get_article(article_id: int, repo: AbstractRepository):

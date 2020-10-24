@@ -43,6 +43,12 @@ class MovieFileCSVReader(AbstractRepository):
     def get_number_of_movies(self):
         return len(self.__movies)
 
+    def get_first_movie(self) -> Movie:
+        return self._get_movie_by_id([self.__movies[0]])
+
+    def get_last_movie(self) -> Movie:
+        return self._get_movie_by_id([self.__movies[-1:]])
+
     def get_movies_by_id(self, id_list):
         existing_ids = [id for id in id_list if id in self.__movies_index]
         movies = [self.__movies_index[id] for id in existing_ids]
@@ -53,6 +59,28 @@ class MovieFileCSVReader(AbstractRepository):
 
         if genre is not None:
             movie_ids = [movie.id for movie in genre.movie_genres]
+        else:
+            # No Tag with name tag_name, so return an empty list.
+            movie_ids = list()
+
+        return movie_ids
+
+    def get_movie_ids_for_actor(self, actor_name: str):
+        actor = next((actor for actor in self.__actors if actor.actor_full_name == actor_name), None)
+
+        if actor is not None:
+            movie_ids = [movie.id for movie in actor.tagged_movies]
+        else:
+            # No Tag with name tag_name, so return an empty list.
+            movie_ids = list()
+
+        return movie_ids
+
+    def get_movie_ids_for_director(self, director_name: str):
+        director = next((director for director in self.__directors if director.director_full_name == director_name), None)
+
+        if director is not None:
+            movie_ids = [movie.id for movie in director.tagged_movies]
         else:
             # No Tag with name tag_name, so return an empty list.
             movie_ids = list()
@@ -176,6 +204,7 @@ def load_movies(data_path: str, repo: MovieFileCSVReader):
         repo.add_director(director)
 
 
+
 def load_reviews(data_path: str, repo: MovieFileCSVReader, users):
     for data_row in read_csv_file(os.path.join(data_path, 'reviews.csv')):
         review = make_review(
@@ -184,6 +213,7 @@ def load_reviews(data_path: str, repo: MovieFileCSVReader, users):
             review_text=data_row[3],
             rating=float(data_row[4])
         )
+        repo.add_review()
 
 
 def populate(data_path: str, repo: MovieFileCSVReader):

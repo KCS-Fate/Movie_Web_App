@@ -56,6 +56,26 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_first_movie(self) -> Movie:
+        """ Get the first Movie in the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_last_movie(self) -> Movie:
+        """ Get the last Movie in the repo. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movie_ids_for_actor(self, actor_name: str):
+        """ Returns a list of ids representing Articles that are tagged by genre_name"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movie_ids_for_director(self, director_name: str):
+        """ Returns a list of ids representing Articles that are tagged by genre_name"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def add_actor(self, actor: Actor):
         """ Adds a actor to the repository"""
         raise NotImplementedError
@@ -93,7 +113,7 @@ class AbstractRepository(abc.ABC):
         """
         if review.user is None or review not in review.user.reviews:
             raise RepositoryException('Comment not correctly attached to a User')
-        if review.article is None or review not in review.movie.reviews:
+        if review.movie is None or review not in review.movie.reviews:
             raise RepositoryException('Comment not correctly attached to an Article')
 
     @abc.abstractmethod
