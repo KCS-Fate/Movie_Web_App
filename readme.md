@@ -19,7 +19,7 @@ $ pip install -r requirements.txt
 
 **Running the application**
 
-From the *COMPSCI-235* directory, and within the activated virtual environment (see *venv\Scripts\activate* above):
+From the *Movie_Web_App* directory, and within the activated virtual environment (see *venv\Scripts\activate* above):
 
 ````shell
 $ flask run
@@ -28,7 +28,7 @@ $ flask run
 
 ## Configuration
 
-The *COMPSCI-235/.env* file contains variable settings. They are set with appropriate values.
+The *Movie_Web_App/.env* file contains variable settings. They are set with appropriate values.
 
 * `FLASK_APP`: Entry point of the application (should always be `wsgi.py`).
 * `FLASK_ENV`: The environment in which to run the application (either `development` or `production`).
