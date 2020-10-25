@@ -22,3 +22,4 @@ six==1.15.0
 wcwidth==0.2.5
 better-profanity==0.6.1
 password-validator==1.0
+pytest==5.4.3

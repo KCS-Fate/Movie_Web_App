@@ -1,0 +1,341 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  font-family: Segoe UI;
+}
+
+/* CSS used for header.html */
+
+.heading {
+    display:inline-block;
+    float:left;
+    font-size: 30px;
+    font-family: Calibri;
+    color: #f6f6f6;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+/* CSS used for navigation.html */
+
+#nav_bar {
+    background-color: #141414;
+    background-size: auto;
+    border-left: 12px solid transparent;
+    margin:0;
+    padding-top:0;
+    width: 100%;
+    top: 0;
+    position: fixed;
+}
+
+nav.nav_bar{
+    background-color: #141414;
+    background-size: auto;
+    border-left: 12px solid transparent;
+    padding-top:0;
+    width: 75%;
+}
+
+div#header_container {
+    min-width: 80%;
+    background-color: #141414;
+    padding-left: 100px;
+    padding-bottom: 70px;
+}
+
+ul.nav {
+    float:right;
+    list-style-type: none;
+    text-align: right;
+    margin: 0 auto;
+    padding-top:20px
+    overflow: hidden;
+    background-color: #141414
+    text-align: center;
+}
+
+ul li.nav_item{
+    display: inline-block;
+    color: black;
+    text-align: center;
+    color: #ebebeb;
+    text-decoration: none;
+    padding: 5px 20px;
+    background-color: #141414
+}
+
+ul li a{
+    display: inline-block;
+    color: #ebebeb;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px 20px;
+    text-decoration: none;
+}
+
+ul li button.nav_dropbtn{
+    color: #ebebeb;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    background-color: #141414;
+    padding: 5px 30px;
+    font-size: 16px;
+}
+
+ul li.user {
+    color: #ebebeb;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    background-color: #141414;
+    padding: 5px 70px;
+    font-size: 20px;
+}
+
+li a:hover, .nav_dropdown:hover .nav_dropbtn {
+    color: #8f8f8f;
+}
+
+li.nav_dropdown {
+    display: inline-block;
+    padding-top: 20px;
+}
+
+li.nav_dropbtn {
+    display: inline-block;
+    position: relative;
+    background-color: white;
+}
+.nav_dropdown_content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0);
+}
+
+.nav_dropdown_content a {
+    color: black;
+    text-decoration: none;
+    padding: 12px 16px;
+    display: block;
+    text-align: left;
+}
+
+.nav_dropdown_content a:hover {background-color: #f1f1f1}
+.nav_dropdown:hover .nav_dropdown_content {display: block;}
+
+/* CSS used to display content, home.html, movies.html, review._movie.html etc. */
+
+.main {
+    margin: 70px;
+    padding: 20px;
+    width: 70%;
+}
+
+div.content{
+    width:80%
+}
+
+.content_header {
+    font-size: 40px;
+    font-family: Calibri;
+    font-weight: bold;
+    text-align: center;
+    color: black;
+    padding-bottom: 20px;
+}
+
+.movie_content{
+    display:inline-block;
+    padding:10px;
+    margin:10px;
+    border-radius:5px;
+    width:100%;
+    border-bottom: 3px solid #333333
+}
+
+.btn_review {
+    background-color: #004F98;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    min-width: 80px;
+    display: inline-block;
+    padding: 10px;
+    margin: 5px;
+    float: right;
+}
+
+.btn_review:hover {
+    background-color: #6CA0DC;
+    font-weight:bold;
+    color: black;
+}
+
+div.review_content {
+    display:inline-block;
+    padding-left:20px;
+    margin:10px;
+    width:100%;
+}
+
+.textarea {
+    width: 80%;
+    font-size:16px;
+    overflow: auto;
+    padding:5px;
+    word-break: break-all;
+}
+
+/* Used for login/registration page */
+
+div.form {
+    padding-left: 100px;
+    padding-top: 50px;
+    width: 100%;
+}
+
+.login {
+    margin: 60px;
+    padding: 20px;
+    width: 80%;
+}
+
+h1.login_header {
+    font-size: 40px;
+    font-family: Calibri;
+    font-weight: bold;
+    text-align: left;
+    color: black;
+    padding-bottom: 20px;
+}
+
+input[type='text'], select {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+input[type='password'], select {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+input[type='submit'] {
+    width: 80%;
+    background-color: #004F98;
+    color: white;
+    padding: 10px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type='submit']:hover {
+    background-color: #6CA0DC;
+    font-weight: bold;
+    color: black;
+}
+
+input[type='search']{
+    width:100%;
+    font-size:20px;
+}
+
+/* CSS for sidebar*/
+
+.sidebar {
+    background-color: #141414;
+    max-width: 350px;
+    min-height: 100px;
+    height: 100%;
+    padding: 0px 20px;
+    right:0;
+    position:fixed;
+}
+
+h1.sidebar_heading {
+    display:inline-block;
+    font-size: 25px;
+    font-weight: normal;
+    color: #f6f6f6;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+aside div.sidebar_content {
+    display:inline-block;
+    font-size: 16px;
+    color: #f6f6f6;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 5px;
+
+}
+
+.genre{
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:row;
+    float:center;
+    margin:0px;
+}
+
+.genre a{
+    border-radius:10px;
+    padding:5px;
+    margin:5px;
+    font-size: 14px;
+    background-color: #004F98;
+    color: #f6f6f6;
+}
+
+.genre a:hover{
+    background-color: #6CA0DC;
+    border: 2px solid #f6f6f6;
+    outline-offset: -2px;
+    color: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

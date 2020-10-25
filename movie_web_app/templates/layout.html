@@ -3,35 +3,23 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>The COVID Pandemic of 2020</title>
+    <title>Movie Web App</title>
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/main.css') }}"
-    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}"/>
 
   </head>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-  <body>
-    <div id="body">
-      <!-- Include navigation partial. -->
+  <header id="nav_bar">
+    <div id="header_container">
+      {% include 'header.html' %}
       {% include 'navigation.html' %}
-
-      <div id="content-2">
-        <!-- Include header partial. -->
-        {% include 'header.html' %}
-
-        <div id="container">
-          <!-- Main content block to be supplied by page. -->
-          {% block content %} {% endblock %}
-
-          <!-- Include sidebar partial. -->
-          {% include 'sidebar.html' %}
-        </div>
-
-      </div>
     </div>
-  </body>
+  </header>
+  <div>
+    {% include 'sidebar.html' %}
+  </div>
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
 </html>

@@ -1,10 +1,39 @@
 {% extends 'layout.html' %} {% block content %}
+<main class="main">
 
-<main id="main">
-    <h1 id="home-title" class="title">{{ title }}</h1>
-    <h2 id="home-greeting" class="title">Welcome! {{ username }}</h2>
-    {% if error_msg is not none %}
-        <p> {{error_msg}} </p>
-    {% endif %}
-</main>
+    <h1 class="content_header">
+        Editors Recommended
+    </h1>
+    {% for movie in movie_set %}
+    <article id="movie">
+        <div class="movie_content">
+            <div style="float:right;">
+                {% if movie.reviews|length > 0 and movie.id != show_reviews_for_movie %}
+                    <button class="btn_review" onclick="location.href='{{ movie.view_review_url }}'">Show {{ movie.reviews|length }} reviews</button>
+                {% endif %}
+                <button class="btn_review" onclick="location.href='{{ movie.add_review_url }}'">Review</button>
+            </div>
+            <div class="content">
+                <h2>{{movie.title}}</h2>
+                <p>Runtime (minutes): {{movie.runtime_minutes}}, Release Year: {{movie.release_year}}</p>
+                <br>
+                <p>{{movie.description}}</p>
+                <p>Director: <strong style="font-weight:bold">{{movie.director}}</strong></p>
+                <p>Actors: {% for actor in movie.actors %} <strong>{{actor.actor_fullname}}</strong>, {% endfor %}</p>
+                <p>Genres: {% for genre in movie.genres %} <strong>{{genre.genre_name}}</strong>, {%endfor%}</p>
+                <p>Rating: {{movie.ratings}}</p>
+            </div>
+            {% if movie.id == show_reviews_for_movie %}
+            <div style="clear:both">
+                <br>
+                {% for review in movie.reviews %}
+                    <p>{{review.review_text}}, ratings: {{review.rating}}/10 by {{review.username}}, {{review.timestamp}}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </article>
+    {% endfor %}
+    </main>
 {% endblock %}
+

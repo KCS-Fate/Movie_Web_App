@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<main class="main">
+    <header>
+        <h1>{{release_year}}</h1>
+    </header>
+
+    <article id="movie">
+        <div class="review_content">
+            <h1>Review for Movie: {{movie.title}}</h1>
+            <p>For User: <strong>{{session.username}}</strong></p>
+            <br>
+            <form action="{{handler_url_review}}" method="post">
+                {{form_review.movie_id}} <!-- Need to include this hidden field as it tracks the movie being reviewed. -->
+                {{form_review.csrf_token}} <!-- Need to include this token - Flask WTForms requires it. -->
+                <div>{{form_review.review.label}} <br>{{form_review.review(size=200, placeholder="type your review", class="textarea", cols="50", rows="6",  wrap="hard")}}
+                    {% if form_review.review.errors %}
+                        <ul class="errors">
+        	            {% for error in form_review.review.errors %}
+        		            <li>{{error}}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="review_form">
+                    {{form_review.rating.label}} <br> {{form_review.rating()}}
+                </div>
+                {{ form_review.submit }}
+            </form>
+        </div>
+        <div style="clear:both">
+            {% for review in movie.reviews %}
+                <p>{{review.review_text}}, rating: {{review.rating}}/10  by {{review.username}}, {{review.timestamp}}</p>
+            {% endfor %}
+        </div>
+    </article>
+</main>
+{% endblock %}

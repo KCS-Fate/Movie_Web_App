@@ -1,7 +1,7 @@
 from typing import List, Iterable
 
-from movie_web_app.datafilereaders.repository import AbstractRepository
-from movie_web_app.domain.methods import make_review, Review, Movie, Genre, Actor, Director
+from movie_web_app.adapters.repository import AbstractRepository
+from movie_web_app.domainmodel.model import make_review, Review, Movie, Genre, Actor, Director
 
 
 class NonExistentMovieException(Exception):

@@ -1,24 +1,36 @@
+import os
+
 from flask import Flask
 
-import movie_web_app.datafilereaders.repository as repo
-from movie_web_app.datafilereaders.movie_file_csv_reader import MovieFileCSVReader, populate
-
-import os
+import movie_web_app.adapters.repository as repo
+from movie_web_app.adapters.memory_repository import MemoryRepository, populate
 
 
 def create_app(test_config=None):
-
+    # Create the Flask app object
     app = Flask(__name__)
-    app.config.from_object("config.Config")
-    data_path = os.path.join('movie_web_app', 'datafilereaders', 'datafiles')
 
-    repo.repo_instance = MovieFileCSVReader()
+    # Configure the app from configuration-file settings
+    app.config.from_object('config.Config')
+    data_path = os.path.join('movie_web_app', 'adapters', 'datafiles')
+
+    if test_config is not None:
+        # Load test configuration, and override any configuration settings.
+        app.config.from_mapping(test_config)
+        data_path = app.config['TEST_DATA_PATH']
+
+    # Create the MemoryRepository implementation for a memory-based repository.
+    repo.repo_instance = MemoryRepository()
     populate(data_path, repo.repo_instance)
 
+    # Build the application and register blueprints
     with app.app_context():
-        # Register blueprints.
+
         from .home import home
         app.register_blueprint(home.home_blueprint)
+
+        from .movies import movies
+        app.register_blueprint(movies.movies_blueprint)
 
         from .authentication import authentication
         app.register_blueprint(authentication.authentication_blueprint)

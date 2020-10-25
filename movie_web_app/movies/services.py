@@ -1,11 +1,10 @@
-# CS235Flix/movies/services.py
-
+import random
 from typing import List, Iterable
-from CS235Flix.adapters.repository import AbstractRepository
-from CS235Flix.domainmodel.model import Movie, Review, Genre, make_review, Actor, Director
+from movie_web_app.adapters.repository import AbstractRepository
+from movie_web_app.domainmodel.model import Movie, Review, Genre, make_review, Actor, Director
 
 
-class NonExistentMovieException(Exception):
+class NonExistentException(Exception):
     pass
 
 
@@ -13,23 +12,11 @@ class UnknownUserException(Exception):
     pass
 
 
-class NonExistentActorException(Exception):
-    pass
-
-
-class NonExistentDirectorException(Exception):
-    pass
-
-
-class NoSearchResultsException(Exception):
-    pass
-
-
 def add_review(review_text: str, username: str, movie_id: int, rating: int, repo: AbstractRepository):
     # Check that the movie exists.
-    movie = repo.get_movie_by_index(movie_id)
+    movie = repo.get_movie_by_id(movie_id)
     if movie is None:
-        raise NonExistentMovieException
+        raise NonExistentException
 
     # Check that the user exists
     user = repo.get_user(username)
@@ -44,16 +31,16 @@ def add_review(review_text: str, username: str, movie_id: int, rating: int, repo
 
 
 def get_movie(movie_id: int, repo: AbstractRepository):
-    movie = repo.get_movie_by_index(movie_id)
+    movie = repo.get_movie_by_id(movie_id)
 
     if movie is None:
-        raise NonExistentMovieException
+        raise NonExistentException
 
     return movie_to_dict(movie)
 
 
-def get_latest_movie(repo: AbstractRepository):
-    movie = repo.get_latest_movie()
+def get_newest_movie(repo: AbstractRepository):
+    movie = repo.get_newest_movie()
 
     return movie_to_dict(movie)
 
@@ -66,16 +53,15 @@ def get_oldest_movie(repo: AbstractRepository):
 def get_movies_by_release_year(year, repo: AbstractRepository):
     movies = repo.get_movies_by_release_year(target_year=year)
 
-    movies_dto = list()
     prev_year = next_year = None
     if len(movies) > 0:
         prev_year = repo.get_release_year_of_previous_movie(movies[0])
         next_year = repo.get_release_year_of_next_movie(movies[0])
 
         # Convert Movies to dictionary form.
-        movies_dto = movies_to_dict(movies)
+        movies = movies_to_dict(movies)
 
-    return movies_dto, prev_year, next_year
+    return movies, prev_year, next_year
 
 
 def get_movie_ids_for_genre(genre_name: str, repo: AbstractRepository):
@@ -85,7 +71,7 @@ def get_movie_ids_for_genre(genre_name: str, repo: AbstractRepository):
 
 
 def get_movies_by_id(id_list, repo: AbstractRepository):
-    movies = repo.get_movies_by_index(id_list)
+    movies = repo.get_movies_by_id(id_list)
 
     # Convert Movies to dictionary form
     movies_as_dict = movies_to_dict(movies)
@@ -94,28 +80,28 @@ def get_movies_by_id(id_list, repo: AbstractRepository):
 
 
 def get_reviews_for_movie(movie_id, repo: AbstractRepository):
-    movie = repo.get_movie_by_index(movie_id)
+    movie = repo.get_movie_by_id(movie_id)
 
     if movie is None:
-        raise NonExistentMovieException
+        raise NonExistentException
 
     return reviews_to_dict(movie.reviews)
 
 
 def search_movie_by_actor_fullname(actor_fullname: str, repo: AbstractRepository):
 
-    movies = repo.get_movies_played_by_an_actor(actor_fullname=actor_fullname)
+    movies = repo.get_movies_by_actor(actor_fullname=actor_fullname)
     if len(movies) == 0:
-        raise NonExistentActorException
+        raise NonExistentException
 
     movies_as_dict = movies_to_dict(movies)
     return movies_as_dict
 
 
 def search_movie_directed_by_director_fullname(director_fullname: str, repo: AbstractRepository):
-    movies = repo.get_movies_directed_by_a_director(director_fullname=director_fullname)
+    movies = repo.get_movies_by_director(director_fullname=director_fullname)
     if len(movies) == 0:
-        raise NonExistentDirectorException
+        raise NonExistentException
     movies_as_dict = movies_to_dict(movies)
     return movies_as_dict
 
@@ -124,7 +110,7 @@ def search_movie_by_actor_and_director(actor_fullname: str, director_fullname: s
     movies = repo.search_movies_by_actor_and_director(actor_fullname=actor_fullname,
                                                       director_fullname=director_fullname)
     if len(movies) == 0:
-        raise NoSearchResultsException
+        raise NonExistentException
 
     movies_as_dict = movies_to_dict(movies)
     return movies_as_dict
@@ -133,23 +119,28 @@ def search_movie_by_actor_and_director(actor_fullname: str, director_fullname: s
 def search_movie_by_title(title:str, repo:AbstractRepository):
     movies = repo.search_movie_by_title(title)
     if len(movies) == 0:
-        raise NoSearchResultsException
+        raise NonExistentException
 
     movies_as_dict = movies_to_dict(movies)
     return movies_as_dict
 
 
-def get_top_6_movies_by_revenue(repo:AbstractRepository):
-    movies = repo.get_top_6_highest_revenue_movies()
-    if len(movies) == 0:
-        raise NoSearchResultsException
+def get_random_movies(repo:AbstractRepository):
+    movie_count = repo.get_number_of_movies()
+    quantity = 5
+    if quantity >= movie_count:
+        # Reduce the quantity of ids to generate if the repository has an insufficient number of articles.
+        quantity = movie_count - 1
 
-    movies_as_dict = movies_to_dict(movies)
-    return movies_as_dict
+    # Pick distinct and random articles.
+    random_ids = random.sample(range(1, movie_count), quantity)
+    movies = repo.get_movies_by_id(random_ids)
+
+    return movies_to_dict(movies)
 
 
-def get_suggestions_for_a_user(username: str, repo: AbstractRepository):
-    movies = repo.get_suggestion_for_user(username=username)
+def user_recommendations_by_genre(username: str, repo: AbstractRepository):
+    movies = repo.user_recommendations_by_genre(username)
     movies_as_dict = movies_to_dict(movies)
     return movies_as_dict
 
@@ -164,11 +155,12 @@ def movie_to_dict(movie: Movie):
         'title': movie.title,
         'release_year': movie.release_year,
         'description': movie.description,
-        'director': movie.director.director_full_name,
+        'director': movie.director,
         'actors': actors_to_dict(movie.actors),
         'genres': genres_to_dict(movie.genres),
         'runtime_minutes': movie.runtime_minutes,
         'reviews': reviews_to_dict(movie.reviews),
+        'ratings': movie.rating,
         'revenue': movie.revenue
     }
     return movie_dict
@@ -191,9 +183,9 @@ def actors_to_dict(actors: Iterable[Actor]):
 
 def genre_to_dict(genre: Genre):
     genre_dict = {
-        'genre_name': genre.genre_name,
-        'number_of_classified_movies': genre.number_of_classified_movies,
-        'classified_movies': [movie.id for movie in genre.classified_movies]
+        'genre_name': genre.genre_full_name,
+        'number_of_classified_movies': genre.number_of_unique_movies,
+        'classified_movies': [movie.id for movie in genre.movie_genres]
     }
     return genre_dict
 
@@ -204,7 +196,7 @@ def genres_to_dict(genres: Iterable[Genre]):
 
 def review_to_dict(review: Review):
     review_dict = {
-        'username': review.review_author.username,
+        'username': review.user.username,
         'movie_id': review.movie.id,
         'review_text': review.review_text,
         'rating': review.rating,
@@ -223,7 +215,5 @@ def reviews_to_dict(reviews: Iterable[Review]):
 
 
 def dict_to_movie(dict):
-    movie = Movie(dict['title'], dict['release_year'], dict['id'])
-
-    # There is no actors, director, genres, reviews, nor runtime_minutes
+    movie = Movie(dict['title'], dict['release_year'])
     return movie

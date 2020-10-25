@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from movie_web_app.datafilereaders.repository import AbstractRepository
-from movie_web_app.domain.methods import User
+from movie_web_app.adapters.repository import AbstractRepository
+from movie_web_app.domainmodel.model import User
 
 
 class NameNotUniqueException(Exception):
@@ -19,15 +19,18 @@ class AuthenticationException(Exception):
 def add_user(username: str, password: str, repo: AbstractRepository):
     # Check that the given username is available.
     user = repo.get_user(username)
+
     if user is not None:
         raise NameNotUniqueException
 
-    # Encrypt password so that the database doesn't store passwords 'in the clear'.
+    # Encrypt password so that the database doesn't store passwords in the plain form
+
     password_hash = generate_password_hash(password)
 
-    # Create and store the new User, with password encrypted.
+    # Creat and store the new User, with password encrypted
     user = User(username, password_hash)
     repo.add_user(user)
+
 
 
 def get_user(username: str, repo: AbstractRepository):
@@ -54,7 +57,7 @@ def authenticate_user(username: str, password: str, repo: AbstractRepository):
 
 def user_to_dict(user: User):
     user_dict = {
-        'username': user.user_name,
+        'username': user.username,
         'password': user.password
     }
     return user_dict

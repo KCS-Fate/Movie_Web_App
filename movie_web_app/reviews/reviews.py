@@ -8,12 +8,12 @@ from flask_wtf import FlaskForm
 from wtforms import TextAreaField, HiddenField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length, ValidationError
 
-import movie_web_app.datafilereaders.repository as repo
+import movie_web_app.adapters.repository as repo
 import movie_web_app.utilities.utilities as utilities
 import movie_web_app.reviews.services as services
 
 from movie_web_app.authentication.authentication import login_required
-from movie_web_app.domain.methods import Review
+from movie_web_app.domainmodel.model import Review
 
 
 # Configure Blueprint.

@@ -1,0 +1,4 @@
+id,user-id,movie-id,review-text,ratings,timestamp
+1,2,1,Wonderful movie,8,2020-10-15#20:26:08.937881-06:00
+2,1,1,"Loved the plot, actors did a splendid job",9,2020-10-15#20:26:08.937881-06:00
+3,3,1,"Came to watch with my kids, they really enjoyed it!",8,2020-10-15#20:26:08.937881-06:00
