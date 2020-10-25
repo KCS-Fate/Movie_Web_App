@@ -1,123 +1,114 @@
+from datetime import date
+
+from movie_web_app.domainmodel.model import User, Movie, Genre, make_review, make_genre_association, Review, \
+    Actor, Director, ModelException
+
 import pytest
 
-from movie_web_app.domainmodel.model import Actor, Genre, Director, User, Review, Movie, \
-    make_actor_association, make_director_association, make_genre_association, make_review
+
+@pytest.fixture()
+def movie():
+    movie = Movie('Moana', 2016)
+    movie.id = int(14)
+    movie_genres = "Animation,Adventure,Comedy".split(",")
+    movie.description = "A terrible curse incurred by the demigod Maui ignites a young girls destiny"[3]
+    movie.director = 'Ron Clements'
+    movie_actors = "Auli'i Cravalho, Dwayne Johnson, Rachel House, Temuera Morrison".split(",")
+    movie.runtime_minutes = 107
+    movie.rating = float(7.7)
+    movie.votes = 118151
+    revenue = 248.75
+    metascore = 81
 
 
-class TestExtensions:
-    def test_movie_rating_update(self):
-        user1 = User('Martin', 'pw12345')
-        filename = 'Data1000Movies.csv'
-        movie_file_reader = MovieFileCSVReader(filename)
-        movie_file_reader.read_csv_file()
-        movie = movie_file_reader.get_movie(Movie("Moana", 2016))
-        review_text = "This movie was very enjoyable."
-        rating = 8
-        review = Review(movie, review_text, rating)
-        user1.add_review(review)
-        assert movie_file_reader.get_movie(Movie("Moana", 2016)).rating == 7.5
+@pytest.fixture()
+def user():
+    return User('dbowie', '1234567890')
 
-    def test_movie_new_rating(self):
-        user1 = User('Martin', 'pw12345')
-        filename = 'Data1000Movies.csv'
-        movie_file_reader = MovieFileCSVReader(filename)
-        movie_file_reader.read_csv_file()
-        movie = movie_file_reader.get_movie(Movie("Rogue One", 2016))
-        review_text = "This movie was very enjoyable."
-        rating = 8
-        review = Review(movie, review_text, rating)
-        user1.add_review(review)
-        assert movie_file_reader.get_movie(Movie("Rogue One", 2016)).rating == 8
 
-    def test_movie_attributes(self):
-        filename = 'Data1000Movies.csv'
-        movie_file_reader = MovieFileCSVReader(filename)
-        movie_file_reader.read_csv_file()
-        movie = movie_file_reader.get_movie(Movie("Split", 2016))
-        rating = movie.rating
-        votes = movie.votes
-        revenue = movie.revenue
-        metascore = movie.metascore
-        genres = movie.genres
-        print(genres)
-        assert rating == 7.3
-        assert votes == 157606
-        assert revenue == 138.12
-        assert metascore == 62
+@pytest.fixture()
+def genre():
+    return Genre('Adventure')
 
-    def test_watchlist(self):
-        watchlist = WatchList()
-        # Testing add and remove
-        watchlist.add_movie(Movie("Moana", 2016))
-        watchlist.add_movie(Movie("Ice Age", 2002))
-        watchlist.add_movie(Movie("Guardians of the Galaxy", 2012))
-        watchlist.add_movie(Movie("Guardians of the Galaxy", 2012))
-        assert watchlist.size() == 3
-        watchlist.remove_movie(Movie("Guardians of the Galaxy", 2012))
-        assert watchlist.size() == 2
-        watchlist.remove_movie(Movie("Guardians of the Galaxy", 2012))
-        assert watchlist.size() == 2
 
-        # Testing select for movies
-        assert watchlist.first_movie_in_watchlist() == Movie("Moana", 2016)
-        selected_movie = watchlist.select_movie_to_watch(1)
-        assert selected_movie == Movie("Ice Age", 2002)
-        selected_out_of_bounds = watchlist.select_movie_to_watch(3)
-        assert selected_out_of_bounds == None
+def test_user_construction(user):
+    assert user.username == 'dbowie'
+    assert user.password == '1234567890'
+    assert repr(user) == '<User dbowie 1234567890>'
 
-        # Testing iteration and next
-        i = 0
-        for item in watchlist:
-            assert item == watchlist.select_movie_to_watch(i)
-            i += 1
+    for comment in user.comments:
+        # User should have an empty list of Comments after construction.
+        assert False
 
-    def test_recommendations(self):
-        user1 = User('Martin', 'pw12345')
-        filename = 'Data1000MoviesTest.csv'
-        movie_file_reader = MovieFileCSVReader(filename)
-        movie_file_reader.read_csv_file()
-        movie = movie_file_reader.get_movie(Movie("Moana", 2016))
-        user1.watch_movie(movie_file_reader.get_movie(Movie("Moana", 2016)))
-        user1.watchlist.add_movie(movie_file_reader.get_movie(Movie("Prometheus", 2012)))
-        movie2 = movie_file_reader.get_movie(Movie("Guardians of the Galaxy", 2014))
-        user1.watchlist.add_movie(movie2)
-        print(user1.watchlist.watchlist)
-        review_text = "This movie was very enjoyable."
-        rating = 8
-        review = Review(movie, review_text, rating)
-        user1.add_review(review)
-        recommendations = user1.give_recommendation_genre(movie_file_reader)
-        assert recommendations == [Movie('Interstellar', 2014), Movie('Rogue One', 2016),
-                                   Movie('Independence Day: Resurgence', 2016), Movie('X-Men: Apocalypse', 2016),
-                                   Movie('Captain America: Civil War', 2016), Movie('Star Trek Beyond', 2016),
-                                   Movie('Deadpool', 2016), Movie('The Secret Life of Pets', 2016),
-                                   Movie('Trolls', 2016), Movie('Sausage Party', 2016)]
 
-    def test_recommendations_empty(self):
-        user1 = User('Martin', 'pw12345')
-        filename = 'Data1000MoviesTest.csv'
-        movie_file_reader = MovieFileCSVReader(filename)
-        movie_file_reader.read_csv_file()
-        recommendations = user1.give_recommendation_genre(movie_file_reader)
-        assert recommendations == [Movie("Guardians of the Galaxy", 2014), Movie("Prometheus", 2012),
-                                   Movie("Split", 2016), Movie("Sing", 2016), Movie("Suicide Squad", 2016),
-                                   Movie("The Great Wall", 2016), Movie("La La Land", 2016), Movie("Mindhorn", 2016),
-                                   Movie("The Lost City of Z", 2016), Movie("Passengers", 2016)]
+def test_article_construction(article):
+    assert article.id is None
+    assert article.date == date.fromisoformat('2020-03-15')
+    assert article.title == 'Coronavirus travel restrictions: Self-isolation deadline pushed back to give airlines breathing room'
+    assert article.first_para == 'The self-isolation deadline has been pushed back'
+    assert article.hyperlink == 'https://www.nzherald.co.nz/business/news/article.cfm?c_id=3&objectid=12316800'
+    assert article.image_hyperlink == 'https://th.bing.com/th/id/OIP.0lCxLKfDnOyswQCF9rcv7AHaCz?w=344&h=132&c=7&o=5&pid=1.7'
 
-    def test_recommendations_actor(self):
-        user1 = User('Martin', 'pw12345')
-        filename = 'Data1000Movies.csv'
-        movie_file_reader = MovieFileCSVReader(filename)
-        movie_file_reader.read_csv_file()
-        movie = movie_file_reader.get_movie(Movie("Moana", 2016))
-        user1.watch_movie(movie_file_reader.get_movie(Movie("Moana", 2016)))
-        user1.watchlist.add_movie(movie_file_reader.get_movie(Movie("Prometheus", 2012)))
-        movie2 = movie_file_reader.get_movie(Movie("Guardians of the Galaxy", 2014))
-        user1.watchlist.add_movie(movie2)
-        print(user1.watchlist.watchlist)
-        review_text = "This movie was very enjoyable."
-        rating = 8
-        review = Review(movie, review_text, rating)
-        user1.add_review(review)
-        recommendations = user1.give_recommendation_actor(movie_file_reader)
-        print(recommendations)
+    assert article.number_of_comments == 0
+    assert article.number_of_tags == 0
+
+    assert repr(
+        article) == '<Article 2020-03-15 Coronavirus travel restrictions: Self-isolation deadline pushed back to give airlines breathing room>'
+
+
+def test_article_less_than_operator():
+    article_1 = Article(
+        date.fromisoformat('2020-03-15'), None, None, None, None
+    )
+
+    article_2 = Article(
+        date.fromisoformat('2020-04-20'), None, None, None, None
+    )
+
+    assert article_1 < article_2
+
+
+def test_tag_construction(tag):
+    assert tag.tag_name == 'New Zealand'
+
+    for article in tag.tagged_articles:
+        assert False
+
+    assert not tag.is_applied_to(Article(None, None, None, None, None, None))
+
+
+def test_make_comment_establishes_relationships(article, user):
+    comment_text = 'COVID-19 in the USA!'
+    comment = make_comment(comment_text, user, article)
+
+    # Check that the User object knows about the Comment.
+    assert comment in user.comments
+
+    # Check that the Comment knows about the User.
+    assert comment.user is user
+
+    # Check that Article knows about the Comment.
+    assert comment in article.comments
+
+    # Check that the Comment knows about the Article.
+    assert comment.article is article
+
+
+def test_make_tag_associations(article, tag):
+    make_tag_association(article, tag)
+
+    # Check that the Article knows about the Tag.
+    assert article.is_tagged()
+    assert article.is_tagged_by(tag)
+
+    # check that the Tag knows about the Article.
+    assert tag.is_applied_to(article)
+    assert article in tag.tagged_articles
+
+
+def test_make_tag_associations_with_article_already_tagged(article, tag):
+    make_tag_association(article, tag)
+
+    with pytest.raises(ModelException):
+        make_tag_association(article, tag)
+
