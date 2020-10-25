@@ -30,7 +30,7 @@
                 {{ form_review.submit }}
             </form>
         </div>
-        <div style="clear:both">
+        <div class="review_content">
             {% for review in movie.reviews %}
                 <p>{{review.review_text}}, rating: {{review.rating}}/10  by {{review.username}}, {{review.timestamp}}</p>
             {% endfor %}
