@@ -1,4 +1,4 @@
-# COVID-19 Web Application
+# Movie Web Application
 
 ## Description
 
@@ -9,19 +9,17 @@ A Web application that demonstrates use of Python's Flask framework. The applica
 **Installation via requirements.txt**
 
 ```shell
-$ cd COMPSCI-235
+$ cd Movie_Web_App
 $ py -3 -m venv venv
 $ venv\Scripts\activate
 $ pip install -r requirements.txt
 ```
 
-When using PyCharm, set the virtual environment using 'File'->'Settings' and select 'Project:COMPSCI-235' from the left menu. Select 'Project Interpreter', click on the gearwheel button and select 'Add'. Click the 'Existing environment' radio button to select the virtual environment. 
-
 ## Execution
 
 **Running the application**
 
-From the *COMPSCI-235* directory, and within the activated virtual environment (see *venv\Scripts\activate* above):
+From the *Movie_Web_App* directory, and within the activated virtual environment (see *venv\Scripts\activate* above):
 
 ````shell
 $ flask run
@@ -30,7 +28,7 @@ $ flask run
 
 ## Configuration
 
-The *COMPSCI-235/.env* file contains variable settings. They are set with appropriate values.
+The *Movie_Web_App/.env* file contains variable settings. They are set with appropriate values.
 
 * `FLASK_APP`: Entry point of the application (should always be `wsgi.py`).
 * `FLASK_ENV`: The environment in which to run the application (either `development` or `production`).
@@ -41,16 +39,13 @@ The *COMPSCI-235/.env* file contains variable settings. They are set with approp
 
 ## Testing
 
-Testing requires that file *COMPSCI-235/tests/conftest.py* be edited to set the value of `TEST_DATA_PATH`. You should set this to the absolute path of the *COMPSCI-235/tests/data* directory. 
+Testing may require that file *movie_web_app/Tests/conftest.py* be edited to set the value of `TEST_DATA_PATH`. You should set this to the absolute path of the *movie_web_app/Tests/data* directory. This can be done in terminal by copying the address path of the directory and cd ^V in terminal to display the path
 
-E.g. 
 
-`TEST_DATA_PATH = os.path.join('C:', os.sep, 'Users', 'ian', 'Documents', 'Python dev', 'COVID-19', 'tests', 'data')`
+You can then run tests from within PyCharm using
+````shell
+$ python -m pytest
+```` 
 
-assigns TEST_DATA_PATH with the following value (the use of os.path.join and os.sep ensures use of the correct platform path separator):
-
-`C:\Users\ian\Documents\python-dev\COVID-19\tests\data`
-
-You can then run tests from within PyCharm.
 
  
