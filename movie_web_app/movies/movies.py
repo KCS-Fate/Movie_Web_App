@@ -7,16 +7,14 @@ from flask import request, render_template, redirect, url_for, session
 from better_profanity import profanity
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, HiddenField, SubmitField, SelectField
-from wtforms.fields.html5 import SearchField, DecimalField
-from wtforms.validators import DataRequired, Length, ValidationError, NumberRange
+from wtforms.fields.html5 import SearchField
+from wtforms.validators import DataRequired, Length, ValidationError
 from movie_web_app.authentication.authentication import login_required
 from movie_web_app.movies.services import NonExistentException
 
 import movie_web_app.adapters.repository as repo
 import movie_web_app.utilities.utilities as utilities
 import movie_web_app.movies.services as services
-
-
 
 # Configure Blueprint
 movies_blueprint = Blueprint(

@@ -2,9 +2,6 @@ from flask import Blueprint, render_template
 import movie_web_app.adapters.repository as repo
 import movie_web_app.utilities.utilities as utilities
 from flask import url_for
-from flask_wtf import FlaskForm
-from wtforms import TextAreaField, HiddenField, SubmitField, DecimalField
-from wtforms.validators import DataRequired, Length, ValidationError, NumberRange
 from movie_web_app.movies.movies import SearchForm, SearchByTitleForm
 from movie_web_app.movies.services import get_movies_by_id, get_random_movies
 home_blueprint = Blueprint(

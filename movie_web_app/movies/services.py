@@ -65,7 +65,7 @@ def get_movies_by_release_year(year, repo: AbstractRepository):
 
 
 def get_movie_ids_for_genre(genre_name: str, repo: AbstractRepository):
-    movie_ids = repo.get_movie_indexes_for_genre(genre_name)
+    movie_ids = repo.get_movies_by_genre(genre_name)
 
     return movie_ids
 

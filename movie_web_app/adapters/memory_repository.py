@@ -28,11 +28,6 @@ class MemoryRepository(AbstractRepository):
     def get_user(self, username) -> User:
         return next((user for user in self.__users if user.username == username), None)
 
-    def get_user_reviews(self, user: User) -> List[Review]:
-        if user in self.__users:
-            return user.reviews
-        return None
-
     def add_actor(self, actor: Actor):
         if isinstance(actor, Actor):
             self.__actors.append(actor)
@@ -90,15 +85,6 @@ class MemoryRepository(AbstractRepository):
             directed_movies = list()
         return directed_movies
 
-    def search_movies_by_actor_and_director(self, actor_fullname: str, director_fullname: str):
-        actor_fullname = actor_fullname.strip()
-        director_fullname = director_fullname.strip()
-        output = list()
-        movies_played_by_actor = self.get_movies_by_actor(actor_fullname=actor_fullname)
-        if len(movies_played_by_actor) > 0:
-            output = [movie for movie in movies_played_by_actor if movie.director.director_full_name.lower() == director_fullname.lower()]
-        return output
-
     def search_movie_by_title(self, title: str) -> List[Movie]:
         output = list()
         for current_movie in self.__movies:
@@ -138,7 +124,6 @@ class MemoryRepository(AbstractRepository):
 
         return previous_year
 
-
     def get_release_year_of_next_movie(self, movie: Movie):
         next_year = None
 
@@ -155,14 +140,13 @@ class MemoryRepository(AbstractRepository):
 
     def get_movie_by_id(self, index: int):
         movie = None
-
         try:
             movie = self.__movie_index[index]
         except KeyError:
             pass
         return movie
 
-    def get_movie_indexes_for_genre(self, genre_name: str):
+    def get_movies_by_genre(self, genre_name: str):
         genre = next((genre for genre in self.__genres if genre.genre_full_name == genre_name), None)
         if genre is not None:
             movie_indexes = [movie.id for movie in genre.movie_genres]
@@ -170,43 +154,7 @@ class MemoryRepository(AbstractRepository):
             movie_indexes = list()
         return movie_indexes
 
-    def get_movie_actors(self, movie: Movie) -> List[Actor]:
-        if movie in self.__movies:
-            return movie.actors
-        return None
-
-    def get_movie_release_year(self, movie: Movie) -> int:
-        if movie in self.__movies:
-            return movie.release_year
-        return None
-
-    def get_movie_description(self, movie: Movie) -> str:
-        if movie in self.__movies:
-            return movie.description
-        return None
-
-    def get_movie_director(self, movie: Movie) -> Director:
-        if movie in self.__movies:
-            return movie.director
-        return None
-
-    def get_movie_reviews(self, movie: Movie):
-        if movie in self.__movies:
-            return movie.reviews
-        return None
-
-    def get_movie_genres(self, movie: Movie) -> List[Genre]:
-        if movie in self.__movies:
-            return movie.genres
-        return None
-
-    def get_movie_runtime_minutes(self, movie: Movie) -> int:
-        if movie in self.__movies:
-            return movie.runtime_minutes
-        return None
-
     def get_movies_by_id(self, index_list):
-        # strip out any ids in the index_list that don't represent the Movie indexes in the repository
         existing_indexes = [index for index in index_list if index in self.__movie_index]
         movies = [self.__movie_index[index] for index in existing_indexes]
         return movies
@@ -217,9 +165,6 @@ class MemoryRepository(AbstractRepository):
 
     def get_reviews(self) -> List[Review]:
         return self.__reviews
-
-    def get_total_number_of_reviews(self) -> int:
-        return len(self.__reviews)
 
     def add_watchlist(self, watchlist: WatchList):
         self.__watchlists.append(watchlist)
@@ -232,14 +177,6 @@ class MemoryRepository(AbstractRepository):
         if index != len(self.__movies) and self.__movies[index].release_year == movie.release_year:
             return index
         raise ValueError
-
-    def get_user_reviewed_movie(self, username:str):
-        user = self.get_user(username)
-        movies = list()
-        if user is not None:
-            for current_review in user.reviews:
-                movies.append(current_review.movie)
-        return movies
 
     def user_recommendations_by_genre(self, username: str) -> List[Movie]:
         user = self.get_user(username)
