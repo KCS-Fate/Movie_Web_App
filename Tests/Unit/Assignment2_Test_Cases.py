@@ -1,7 +1,7 @@
 from datetime import date
 
 from movie_web_app.domainmodel.model import User, Movie, Genre, make_review, make_genre_association, Review, \
-    Actor, Director, ModelException
+    Actor, Director, ModelException, make_actor_association, make_genre_association
 
 import pytest
 
@@ -17,8 +17,16 @@ def movie():
     movie.runtime_minutes = 107
     movie.rating = float(7.7)
     movie.votes = 118151
-    revenue = 248.75
-    metascore = 81
+    movie.revenue = 248.75
+    movie.metascore = 81
+
+    for actor_name in movie_actors:
+        actor = Actor(actor_name)
+        make_actor_association(movie, actor)
+
+    for genre_name in movie_genres:
+        genre = Genre(genre_name)
+        make_genre_association(movie, genre)
 
 
 @pytest.fixture()
@@ -37,7 +45,7 @@ def test_user_construction(user):
     assert repr(user) == '<User dbowie 1234567890>'
 
     for comment in user.comments:
-        # User should have an empty list of Comments after construction.
+        # User should have an empty list of Review after construction.
         assert False
 
 
@@ -79,27 +87,27 @@ def test_make_comment_establishes_relationships(movie, user):
     comment_text = 'What a great movie!'
     comment = make_review(comment_text, user, movie)
 
-    # Check that the User object knows about the Comment.
+    # Check that the User object knows about the Review.
     assert comment in user.reviews
 
-    # Check that the Comment knows about the User.
+    # Check that the Review knows about the User.
     assert comment.user is user
 
-    # Check that Article knows about the Comment.
+    # Check that Movie knows about the Review.
     assert comment in movie.reviews
 
-    # Check that the Comment knows about the Article.
+    # Check that the Review knows about the Movie.
     assert comment.movie is movie
 
 
 def test_make_genre_associations(movie, genre):
     make_genre_association(movie, genre)
 
-    # Check that the Article knows about the Tag.
+    # Check that the Movie knows about the Genre.
     assert movie.is_tagged()
     assert movie.is_tagged_by(genre)
 
-    # check that the Tag knows about the Article.
+    # check that the Genre knows about the Movie.
     assert genre.is_applied_to(movie)
     assert movie in genre.tagged_movies
 
