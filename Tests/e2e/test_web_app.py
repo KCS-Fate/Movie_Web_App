@@ -83,7 +83,7 @@ def test_review(client, auth):
 
 
 @pytest.mark.parametrize(('review', 'rating', 'messages'), (
-        ('Fucking trash acting','3', (b'Your review must not contain profanity')),
+        ('Fucking trash acting', '3', (b'Your review must not contain profanity')),
         ('Hey', '5', (b'Your review is too short')),
         ('ass', '1', (b'Your review is too short', b'Your review must not contain profanity')),
 ))
@@ -127,7 +127,7 @@ def test_movies_with_review(client):
     response = client.get('/movies_by_release_year?year=2014&view_reviews_for=1')
     assert response.status_code == 200
 
-    # Check that all comments for specified movie are included on the page
+    # Check that all reviews for specified movie are included on the page
     assert b'Wonderful movie' in response.data
     assert b'Loved the plot, actors did a splendid job' in response.data
     assert b'Came to watch with my kids, they really enjoyed it!' in response.data
@@ -169,7 +169,7 @@ def test_search_by_movie_title(client):
     response = client.post('/search_by_title', data={'title': "Passengers"})
     assert response.headers['Location'] == 'http://localhost/sidebar_movies_by_title?title=Passengers'
 
-    # Check that we can have the desired movie returned by the search
+    # Check that we have the desired movie returned by the search
     response = client.get('/sidebar_movies_by_title?title=Passengers')
     assert response.status_code == 200
     assert b'Passengers' in response.data
